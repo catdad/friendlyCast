@@ -165,7 +165,7 @@
         session: 'session',
         mediaDiscovered: 'mediaDiscovered', //media is playing?
         mediaControl: 'mediaControl',
-        extesionLoaded: 'extensionLoaded'
+        extensionLoaded: 'extensionLoaded'
     };
     
     /**
@@ -467,7 +467,7 @@
     window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
         if (loaded) {
             chromecast.init();
-            privateGlobal.events.trigger(chromecast.Events.extesionLoaded);
+            privateGlobal.events.trigger(chromecast.Events.extensionLoaded);
         } else {
             console.log('cast err', errorInfo);
             
