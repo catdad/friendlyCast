@@ -31,6 +31,41 @@ Yes, folks, it's that easy. When the user tells you which video to play, just pr
     var urlString = 'http://server/path/to/video.mp4';
     chromecast.startCast(urlString);
 
+## Media controls
+
+Controlling the playing media is pretty simple as well:
+
+    chromecast.control.pause();
+    chromecast.control.play();
+    
+Seeking is done in seconds, relative to the beginning of the video. To seek to 5 minutes into the video:
+
+    var time = 5 * 60;
+    chromecast.control.seek(time);
+    
+Stopping the video is also simple. However, note that stopping the video causes you to lose the media object, and you will need to play a new video to continue:
+
+    chromecase.control.stop();
+    
+    //this will do nothing
+    chromecast.control.play();
+    
+    //play a new video (or the same one again)
+    chromecast.startCast(urlString);
+    
+There are some auxilary methods in the media control object as well:
+
+    chromecast.control.duration();
+    //returns the total time in seconds
+    
+    chromecast.control.time();
+    //return the current time
+    //Note: this doesn't always work, I don't know why
+    
+    chromecast.control.status();
+    //return the current status of the player
+    //this will be the same status as the default Google Cast API
+
 ## Events
 
 Rather than providing a million callback functions every step of the way, Friendly Cast emits events using a familiar on/off system.
