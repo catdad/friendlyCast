@@ -164,6 +164,7 @@
         initialized: 'initialized',
         session: 'session',
         mediaDiscovered: 'mediaDiscovered', //media is playing?
+        mediaControl: 'mediaControl',
         extesionLoaded: 'extensionLoaded'
     };
     
@@ -347,8 +348,9 @@
      * @param {boolean} success Whether it is a `success` or `error` callback
      */
     var mediaControlCallbackGenerator = function(command, success){
-        return function onMediaControl(){
-            console.log('mediacontrol', ((success) ? 'success' : 'error'), command, arguments);  
+        return function onMediaControl(ev){
+            console.log('mediacontrol', ((success) ? 'success' : 'error'), command, arguments);
+            privateGlobal.events.trigger(Cast.prototype.Events.mediaControl, command, ev);
         };  
     };
     
