@@ -1,6 +1,11 @@
 /* jslint browser: true, devel: true, expr: true */
 /* globals chrome, chromecast */
 
+/*
+ * Copyright (c) 2014 Kiril Vatev
+ * The MIT License (MIT)
+ */
+
 !function(global, undefined){
     /**
      * @description An Event Emitter object
