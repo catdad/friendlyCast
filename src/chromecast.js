@@ -67,7 +67,8 @@
      */
     CastError.type = {
         mediaError: 'mediaError',
-        sessionError: 'sessionError'
+        sessionError: 'sessionError',
+        extensionError: 'extensionError'
     };
     
     /**
@@ -83,6 +84,8 @@
      * @protected
      */
     var Cast = function(){
+        var that = this;
+        
         /**
          * @description The current Chromecast session
          */
@@ -94,11 +97,17 @@
         
         var available = false;
         this.isAvailable = function(){ return available; };
-        privateGlobal.setAvailable = function(bool){ available = !!bool; };
+        privateGlobal.setAvailable = function(bool){ 
+            available = !!bool;
+            privateGlobal.events.trigger(that.Events.ready);
+        };
         
         var initialized = false;
         this.isInitialized = function(){ return initialized; };
-        privateGlobal.setInitialized = function(bool){ initialized = !!bool; };
+        privateGlobal.setInitialized = function(bool){
+            initialized = !!bool;
+            privateGlobal.events.trigger(that.Events.initialized);
+        };
     };
     
     /**
@@ -140,9 +149,12 @@
      */
     Cast.prototype.Events = {
         error: 'error',
+        ready: 'ready',
         available: 'available',
+        initialized: 'initialized',
         session: 'session',
         mediaDiscovered: 'mediaDiscovered', //media is playing?
+        extesionLoaded: 'extensionLoaded'
     };
     
     /**
@@ -184,8 +196,8 @@
             //there is no session, create one
             that.getNewSession(playVideo, function(err){
                 console.log('error with playing video', err);
-                //TODO what is this error?
-                var customErr = CastError('newSessionError', arguments, true);
+                //TODO is this permanent
+                var customErr = CastError(CastError.type.sessionError, arguments);
                 privateGlobal.events.trigger(that.Events.error, customErr);
             });
         }
@@ -200,6 +212,9 @@
             
             //save the session to reuse later
             that.session = session;
+            
+            //fire event
+            privateGlobal.events.trigger(that.Events.session, session);
 
             //call the success callback
             onSuccess && onSuccess(session);
@@ -211,6 +226,8 @@
             
             //call the error callback
             onError && onError.apply(null, err);
+            
+            //error event handled in the `onError` function above
         };
 
         //request a session
@@ -246,14 +263,13 @@
             that.session = session;
             privateGlobal.setAvailable(true);
             
-            //TODO fire event
-            
             console.log('session listener', arguments);  
         };
         //event for receiver status
         var receiverListener = function(status){
             if (status === 'available'){
                 //I can cast
+                privateGlobal.events.trigger(that.Events.available);
             }
             else {
                 //boo, I can't cast
@@ -270,7 +286,6 @@
             
             //chromecast is available
             privateGlobal.setAvailable(true);
-            
         };
         var onError = function(){
             console.log('cast on error', arguments);
@@ -343,11 +358,14 @@
     window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
         if (loaded) {
             chromecast.init();
+            privateGlobal.events.trigger(chromecast.Events.extesionLoaded);
         } else {
-            //TODO fire event -- no casting
+            console.log('cast err', errorInfo);
+            
             //this is a permanent error
             //a page refresh is probably required
-            console.log('cast err', errorInfo);
+            var err = CastError(CastError.type.extensionError, null, true);
+            privateGlobal.events.trigger(chromecast.Events.error, err);
         }
     };
     /*jslint ignore:end*/
@@ -368,8 +386,6 @@
 //    //<script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
 //}();
 
-//TODO events
-//TODO ErrorType
 //TODO dom stuff
 //TODO media control
 
