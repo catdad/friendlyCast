@@ -253,14 +253,13 @@
         var mediaInfo = new chrome.cast.media.MediaInfo(url);
 
         info = info || {};
+        //make sure some defaults exist
+        info.title = info.title || url;
+        info.subtitle = info.subtitle || 'Using FriendlyCast';
         
         //add some info
         mediaInfo.contentType = info.contentType || this.MediaTypes.video;
-        //TODO metadata in info parameter
-        mediaInfo.metadata = {
-            "subtitle" : "Things and stuff",
-            "title" : "Video Title"
-        };
+        mediaInfo.metadata = info;
         
         //create new media request object
         var mediaRequest = new chrome.cast.media.LoadRequest(mediaInfo);
