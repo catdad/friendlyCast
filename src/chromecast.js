@@ -407,7 +407,7 @@
      */
     CastControl.prototype.status = function(){
         if (privateGlobal.media){
-            return privateGlobal.media.playerStatus.toLowerCase();
+            return privateGlobal.media.playerState.toLowerCase();
         }
         else{
             return null;   
