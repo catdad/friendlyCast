@@ -94,6 +94,10 @@
          * @description The current application ID
          */
         this.appID = undefined;
+        /**
+         * @description The current Media object
+         */
+        this.media = undefined;
         
         var available = false;
         this.isAvailable = function(){ return available; };
@@ -107,6 +111,12 @@
         privateGlobal.setInitialized = function(bool){
             initialized = !!bool;
             privateGlobal.events.trigger(that.Events.initialized);
+        };
+        
+        this.getMedia = function(){ return this.media; };
+        privateGlobal.setMedia = function(media){
+            that.media = media;
+            this.media = that.media;
         };
     };
     
@@ -166,8 +176,11 @@
         var that = this;
         
         //event when media starts playing?
-        function onMediaDiscovered(how, media){
+        function onMediaDiscovered(media){
             console.log('onmediadiscovered', arguments);
+            
+            privateGlobal.setMedia(media);
+            
             //TODO args?
             //TODO event name should be "playing"?
             privateGlobal.events.trigger(that.Events.mediaDiscovered);
@@ -329,6 +342,101 @@
     };
     
     /**
+     * @description Generated media control callback functions
+     * @param {string} command The command issued
+     * @param {boolean} success Whether it is a `success` or `error` callback
+     */
+    var mediaControlCallbackGenerator = function(command, success){
+        return function onMediaControl(){
+            console.log('mediacontrol', ((success) ? 'success' : 'error'), command, arguments);  
+        };  
+    };
+    
+    /**
+     * @description Creates the Media Control object
+     * @constructor
+     */
+    var CastControl = function(){ };
+    
+    /**
+     * @description Sends a play/resume command to the current media session
+     */
+    CastControl.prototype.play = function(){
+        if (privateGlobal.media) 
+            privateGlobal.media.play(null, 
+                                     mediaControlCallbackGenerator('play', true), 
+                                     mediaControlCallbackGenerator('play', false));
+    };
+    /**
+     * @description Sends a pause command to the current media session
+     */
+    CastControl.prototype.pause = function(){
+        if (privateGlobal.media) 
+            privateGlobal.media.pause(null, 
+                                      mediaControlCallbackGenerator('pause', true), 
+                                      mediaControlCallbackGenerator('pause', false));
+    };
+    /**
+     * @description Sends a stop command to the current media session
+     * This is permanent, and no media will be available after this command
+     */
+    CastControl.prototype.stop = function(){
+        if (privateGlobal.media) 
+            privateGlobal.media.stop(null, 
+                                     mediaControlCallbackGenerator('stop', true), 
+                                     mediaControlCallbackGenerator('stop', false));
+    };
+    /**
+     * @description Sends a seek command to the current media session
+     * @param {number} seconds The time to seek to, in seconds
+     */
+    CastControl.prototype.seek = function(seconds){
+        if (privateGlobal.media) {
+            var seekRequest = new chrome.cast.media.SeekRequest();
+            seekRequest.currentTime = seconds;
+            
+            privateGlobal.media.seek(seekRequest, 
+                                     mediaControlCallbackGenerator('seek', true), 
+                                     mediaControlCallbackGenerator('seek', false));
+        }
+    };
+    /**
+     * @description Gets the status of the current media.
+     * @returns {string|null} status The status of the media. Return `null` if there is no media.
+     */
+    CastControl.prototype.status = function(){
+        if (privateGlobal.media){
+            return privateGlobal.media.playerStatus.toLowerCase();
+        }
+        else{
+            return null;   
+        }
+    };
+    /**
+     * @description Gets or sets the current time of the video, in seconds. If passing in a number, it is an alias for `seek`.
+     * @param {number} seconds [Optional] If seconds are passed in, this is an alias for `seek`.
+     * @returns {number} time The current time in seconds.
+     */
+    CastControl.prototype.time = function(seconds){
+        if (privateGlobal.media && seconds === undefined){
+            return privateGlobal.media.currentTime;
+        }
+        else this.seek(seconds);
+    };
+    /**
+     * @description Gets the duration of the currently playing media.
+     * @returns {number|null} seconds The duration in seconds.
+     */
+    CastControl.prototype.duration = function(){
+        if (privateGlobal.media){
+            return privateGlobal.media.media.duration;
+        }
+        else return null;
+    };
+    
+    Cast.prototype.control = new CastControl();
+    
+    /**
      * @description Subscribe to Chromecast events
      */
     Cast.prototype.on = function(name, callback){
@@ -387,5 +495,3 @@
 //}();
 
 //TODO dom stuff
-//TODO media control
-
