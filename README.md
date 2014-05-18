@@ -1,5 +1,6 @@
 # Friendly Cast
 
+If you've ever tried using the official Google Cast API (Chromecast API), you know my frustration. It's very verbose and unintuitive, and there is no good reason for it. After about a day of working with this API, I had enough and decided to make my life a bit easier. There is no reason such a simple platform should have such a high barrier to entry. Now, we can all have a modern JavaScript API for the Chromecast. 
 
 ## Disclaimer
 
