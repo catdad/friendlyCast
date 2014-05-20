@@ -191,7 +191,7 @@
         function onMediaError(){
             console.log('onmediaerror', arguments);
             var err = CastError(CastError.type.mediaError, arguments);
-            privateGlobal.events.trigger(this.Events.error, err);
+            privateGlobal.events.trigger(that.Events.error, err);
         }
         
         //plays the video using the current session
