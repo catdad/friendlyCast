@@ -99,11 +99,18 @@
          */
         this.media = undefined;
         
+        var ready = false;
+        this.isReady = function(){ return ready; };
+        privateGlobal.setReady = function(bool){
+            ready = !!bool;
+            privateGlobal.events.trigger(that.Events.ready);
+        };
+        
         var available = false;
         this.isAvailable = function(){ return available; };
         privateGlobal.setAvailable = function(bool){ 
             available = !!bool;
-            privateGlobal.events.trigger(that.Events.ready);
+            privateGlobal.events.trigger(that.Events.available);
         };
         
         var initialized = false;
@@ -238,6 +245,9 @@
         var onLaunchError = function(err){
             console.log('onlauncherror', arguments);
             
+            if (err.code === 'receiver_unavailable')
+                privateGlobal.setAvailable(false);
+            
             //call the error callback
             onError && onError.apply(null, err);
             
@@ -280,9 +290,12 @@
         };
         //event for receiver status
         var receiverListener = function(status){
+            //casting is ready
+            privateGlobal.setReady(true);
+            
             if (status === 'available'){
                 //I can cast
-                privateGlobal.events.trigger(that.Events.available);
+                privateGlobal.setAvailable(true);
             }
             else {
                 //boo, I can't cast
@@ -297,8 +310,8 @@
         var onInitSuccess = function(){
             console.log('on init success', arguments);
             
-            //chromecast is available
-            privateGlobal.setAvailable(true);
+            //chromecast is ready
+            privateGlobal.setReady(true);
         };
         var onError = function(){
             console.log('cast on error', arguments);
@@ -441,6 +454,11 @@
      * @description Subscribe to Chromecast events
      */
     Cast.prototype.on = function(name, callback){
+        //let's call ones that already happened the easy way
+        if (name === Cast.Events.ready && this.isReady()) callback();
+        else if (name === Cast.Events.available && this.isAvailable()) callback();
+        else if (name === Cast.Events.initialized && this.isInitialized()) callback();
+        
         privateGlobal.events.on(name, callback);
         return this;
     };
