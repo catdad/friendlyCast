@@ -124,6 +124,15 @@
         privateGlobal.setMedia = function(media){
             that.media = media;
             this.media = that.media;
+            
+            media.addUpdateListener(function(someBool){
+                //what is this bool
+                if (!someBool){
+                    //media is over
+                    privateGlobal.events.trigger(that.Events.mediaEnd);
+                    console.log('media update', ': ended');
+                }
+            });
         };
     };
     
@@ -172,6 +181,7 @@
         session: 'session',
         mediaDiscovered: 'mediaDiscovered', //media is playing?
         mediaControl: 'mediaControl',
+        mediaEnd: 'mediaEnd',
         extensionLoaded: 'extensionLoaded'
     };
     
@@ -415,6 +425,34 @@
         }
     };
     /**
+     * @description Gets or ets the volume of the Chromecast
+     * @param {number|string} value [Optional] 
+     */
+    CastControl.prototype.volume = function(value){
+        if (privateGlobal.media && privateGlobal.session) {
+            if (value === 'mute'){
+                privateGlobal.session.setReceiverVolumeLevel(value,
+                                         mediaControlCallbackGenerator('mute', true),
+                                         mediaControlCallbackGenerator('mute', false));
+            }
+            else (value === 'unmute'){
+                privateGlobal.session.setReceiverVolumeLevel(value,
+                                         mediaControlCallbackGenerator('unmute', true),
+                                         mediaControlCallbackGenerator('unmute', false));
+            }
+            else if (typeof value === 'number'){
+                //this one doesn't work... go figure
+                //privateGlobal.media.setVolume(volume,
+                privateGlobal.session.setReceiverVolumeLevel(value,
+                                         mediaControlCallbackGenerator('volume', true),
+                                         mediaControlCallbackGenerator('volume', false));
+            }
+            
+            return privateGlobal.media.volume;
+        }
+    };
+    
+    /**
      * @description Gets the status of the current media.
      * @returns {string|null} status The status of the media. Return `null` if there is no media.
      */
@@ -480,6 +518,9 @@
     };
     
     global.chromecast = new Cast();
+    chromecast.on(chromecast.Events.session, function(session){
+        privateGlobal.session = session;  
+    };
     
     /*jslint ignore:start*/
     window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
