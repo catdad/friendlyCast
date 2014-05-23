@@ -493,9 +493,9 @@
      */
     Cast.prototype.on = function(name, callback){
         //let's call ones that already happened the easy way
-        if (name === Cast.Events.ready && this.isReady()) callback();
-        else if (name === Cast.Events.available && this.isAvailable()) callback();
-        else if (name === Cast.Events.initialized && this.isInitialized()) callback();
+        if (name === Cast.prototype.Events.ready && this.isReady()) callback();
+        else if (name === Cast.prototype.Events.available && this.isAvailable()) callback();
+        else if (name === Cast.prototype.Events.initialized && this.isInitialized()) callback();
         
         privateGlobal.events.on(name, callback);
         return this;
