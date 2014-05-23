@@ -435,7 +435,7 @@
                                          mediaControlCallbackGenerator('mute', true),
                                          mediaControlCallbackGenerator('mute', false));
             }
-            else (value === 'unmute'){
+            else if (value === 'unmute'){
                 privateGlobal.session.setReceiverVolumeLevel(value,
                                          mediaControlCallbackGenerator('unmute', true),
                                          mediaControlCallbackGenerator('unmute', false));
@@ -520,7 +520,7 @@
     global.chromecast = new Cast();
     chromecast.on(chromecast.Events.session, function(session){
         privateGlobal.session = session;  
-    };
+    });
     
     /*jslint ignore:start*/
     window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
