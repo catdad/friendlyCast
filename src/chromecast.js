@@ -372,7 +372,10 @@
     var mediaControlCallbackGenerator = function(command, success){
         return function onMediaControl(ev){
             console.log('mediacontrol', ((success) ? 'success' : 'error'), command, arguments);
-            privateGlobal.events.trigger(Cast.prototype.Events.mediaControl, command, ev);
+            ev = ev || {};
+            ev.command = command;
+            ev.success = !!success;
+            privateGlobal.events.trigger(Cast.prototype.Events.mediaControl, ev);
         };  
     };
     
