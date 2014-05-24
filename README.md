@@ -43,6 +43,18 @@ Seeking is done in seconds, relative to the beginning of the video. To seek to 5
     var time = 5 * 60;
     chromecast.control.seek(time);
     
+Volume settings:
+
+    chromecast.control.volume(.5);
+    //sets the Chromecast to 50% volume
+    //this value is any number between 0 and 1
+    
+    chromecast.control.volume('mute');
+    //mutes the Chromecast
+    
+    chromecast.control.volume('unmute');
+    //returns the Chromecast to the volume level before `mute`
+    
 Stopping the video is also simple. However, note that stopping the video causes you to lose the media object, and you will need to play a new video to continue:
 
     chromecase.control.stop();
@@ -70,7 +82,7 @@ There are some auxilary methods in the media control object as well:
 
 Rather than providing a million callback functions every step of the way, Friendly Cast emits events using a familiar on/off system.
 
-    chromecast.on('available', function(){
+    chromecast.on('available', function(ev){
         var urlString = 'http://server/path/to/video.mp4';
         chromecast.startCast(urlString);
     });
@@ -93,8 +105,23 @@ To find out all of the available events, you can check out the `chromecast.Event
     chromecast.on(chromecast.Events.ready, function(){
         //the Google Cast API is available
     });
+
+Some events you might care about:
+
+* `mediaDiscovered`: Event is fired when the media starts. This is the name Chromecast uses, so I use it too. Sorry that it's confusing.
+* `mediaControl`: Event is issued any time you request to change something about the media. This event will tell you what command triggered it.
+
+    chromecast.on(chromecast.Events.mediaEnd, function(ev){
+        ev.command; // {string} the command that triggered it
+        ev.success; // {bool} whether the command was successful
+        
+        // if there is an error, `ev` might have extra stuff in it
+        // that was provided by Chrome
+    });
     
-More documentation will come on events as I have it.
+* `mediaEnd`: Event is triggered when the media playing has ended. Doesn't provide any special information.
+
+More documentation will come on events as I have it. In the meantime, you can see all of the events if you observe the `chromecast.Events` object. Subscribe to the ones you think you might need and `console.log` the event to see what it provides.
 
 ## Errors
 
@@ -110,7 +137,7 @@ More documentation will come on errors as I have it.
 
 ## What next?
 
-Sit tight for media controls, queues, etc. In the meantime, you can still use the regular Google Cast API to continue, or use the `chromecast.session` object to access the current session.
+Sit tight for more coverage of the API. In the meantime, you can still use the regular Google Cast API to continue, or use the `chromecast.session` and `chromecast.media` objects to access the current session.
 
 ## License
 
