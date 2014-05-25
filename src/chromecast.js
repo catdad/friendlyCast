@@ -259,7 +259,7 @@
                 privateGlobal.setAvailable(false);
             
             //call the error callback
-            onError && onError.apply(null, err);
+            onError && onError(err);
             
             //error event handled in the `onError` function above
         };
@@ -444,7 +444,8 @@
                                          mediaControlCallbackGenerator('unmute', false));
             }
             else if (typeof value === 'number'){
-                //this one doesn't work... go figure
+                //media volume doesn't work as per the API... go figure
+                //we have to use session volume instead
                 //privateGlobal.media.setVolume(volume,
                 privateGlobal.session.setReceiverVolumeLevel(value,
                                          mediaControlCallbackGenerator('volume', true),
@@ -474,6 +475,7 @@
      */
     CastControl.prototype.time = function(seconds){
         if (privateGlobal.media && seconds === undefined){
+            //for some reason, this is not always up to date
             return privateGlobal.media.currentTime;
         }
         else this.seek(seconds);
@@ -489,6 +491,9 @@
         else return null;
     };
     
+    /**
+     * An instance of a {@link CastControl} object, to control the current media. 
+     */
     Cast.prototype.control = new CastControl();
     
     /**
@@ -521,6 +526,7 @@
     };
     
     global.chromecast = new Cast();
+    //listen to a session event and save the session in scope
     chromecast.on(chromecast.Events.session, function(session){
         privateGlobal.session = session;  
     });
@@ -541,20 +547,5 @@
     };
     /*jslint ignore:end*/
 }(this);
-
-//insert Google Cast API
-//!function(){
-//    var head = document.head || document.getElementsByTagName('head')[0];
-//    var scr = document.createElement('script');
-//    scr.type = 'text/javscript';
-//    scr.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js';
-//    
-//    //head.appendChild(scr);
-//    document.body.appendChild(scr);
-//    
-//    console.log('inserted script');
-//    
-//    //<script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
-//}();
 
 //TODO dom stuff
