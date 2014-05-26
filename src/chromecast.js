@@ -244,6 +244,8 @@
             //save the session to reuse later
             that.session = session;
             
+            if (session.media && session.media.length) privateGlobal.setMedia(session.media[0]);
+            
             //fire event
             privateGlobal.events.trigger(that.Events.session, session);
 
@@ -294,6 +296,9 @@
         var sessionListener = function(session){
             //sweet, I have a session
             that.session = session;
+            
+            if (session.media && session.media.length) privateGlobal.setMedia(session.media[0]);
+            
             privateGlobal.setAvailable(true);
             
             console.log('session listener', arguments);  
@@ -476,7 +481,8 @@
     CastControl.prototype.time = function(seconds){
         if (privateGlobal.media && seconds === undefined){
             //for some reason, this is not always up to date
-            return privateGlobal.media.currentTime;
+            //return privateGlobal.media.currentTime;
+            return privateGlobal.media.getEstimatedTime();
         }
         else this.seek(seconds);
     };
@@ -528,7 +534,8 @@
     global.chromecast = new Cast();
     //listen to a session event and save the session in scope
     chromecast.on(chromecast.Events.session, function(session){
-        privateGlobal.session = session;  
+        privateGlobal.session = session;
+        if (session.media && session.media.length) privateGlobal.setMedia(session.media[0]);
     });
     
     /*jslint ignore:start*/
