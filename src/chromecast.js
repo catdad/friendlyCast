@@ -370,6 +370,13 @@
     };
     
     /**
+     * @description Stop the Chromecast session and go back to the spash screen
+     */
+    Cast.prototype.disconnect = function(){
+        if (this.session) this.session.stop();  
+    };
+    
+    /**
      * @description Generated media control callback functions
      * @param {string} command The command issued
      * @param {boolean} success Whether it is a `success` or `error` callback
