@@ -349,9 +349,6 @@
     Cast.prototype.init = function init(applicationID){
         var that = this;
         
-        //TODO fire an event that Cast is ready for init
-        
-        
         //set the appID, or use the one already assigned
         that.appID = applicationID || that.appID;
         
@@ -545,7 +542,7 @@
         if (session.media && session.media.length) privateGlobal.setMedia(session.media[0]);
     });
     
-    /*jslint ignore:start*/
+    /*jslint ignore: start*/
     window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
         if (loaded) {
             chromecast.init();
@@ -559,7 +556,5 @@
             privateGlobal.events.trigger(chromecast.Events.error, err);
         }
     };
-    /*jslint ignore:end*/
+    /*jslint ignore: end*/
 }(this);
-
-//TODO dom stuff
