@@ -4,7 +4,7 @@ If you've ever tried using the official Google Cast API (Chromecast API), you kn
 
 ## Disclaimer
 
-In similarity with Google, this API wrapper is a developer preview. It was made in only a few hours, after spending an entire frustrating day trying to work with the official API. I am actively breaking this right now, as you read this. Don't worry, it will be stable soon
+In similarity with Google, this API wrapper is a developer preview. It was made in only a few hours, after spending an entire frustrating day trying to work with the official API. I am currently only focusing on video content, but support will expand eventually. I am actively breaking this right now, as you read this. Don't worry, it will be stable soon.
 
 The events and errors need more work, as I am not certain what they all mean at the moment. Further, I will need to do a bit more work to fully support custom receivers.
 
@@ -71,8 +71,7 @@ There are some auxilary methods in the media control object as well:
     //returns the total time in seconds
     
     chromecast.control.time();
-    //return the current time
-    //Note: this doesn't always work, I don't know why
+    //return the current time in seconds
     
     chromecast.control.status();
     //return the current status of the player
