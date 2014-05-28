@@ -30,6 +30,14 @@ Yes, folks, it's that easy. When the user tells you which video to play, just pr
 
     var urlString = 'http://server/path/to/video.mp4';
     chromecast.startCast(urlString);
+    
+Some advanced uptions:
+
+    var urlString = 'http://server/path/to/video.mp4';
+    chromecast.startCast(urlString, {
+        title: 'Pretty Video Name',
+        contentType: chromecasst.MediaTypes.video
+    });
 
 ## Media controls
 
@@ -136,7 +144,7 @@ More documentation will come on errors as I have it.
 
 ## What next?
 
-Sit tight for more coverage of the API. In the meantime, you can still use the regular Google Cast API to continue, or use the `chromecast.session` and `chromecast.media` objects to access the current session.
+Sit tight for more coverage of the API, including more media types. In the meantime, you can still use the regular Google Cast API to continue, or use the `chromecast.session` and `chromecast.media` objects to access the current session.
 
 ## License
 
