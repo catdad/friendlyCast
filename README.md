@@ -149,3 +149,5 @@ Sit tight for more coverage of the API, including more media types. In the meant
 ## License
 
 All code here is licensed under the MIT X11 License.
+
+[![Analytics](https://ga-beacon.appspot.com/UA-17159207-7/friendly-cast/readme)](https://github.com/igrigorik/ga-beacon)
