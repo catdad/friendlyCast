@@ -6,6 +6,10 @@
  * The MIT License (MIT)
  */
 
+//temp util - https://gist.github.com/catdad/1ea87248218969e57794
+if (!window.console) { window.console = { log: function () {} }; } // console fix for IE8 
+if (!console.log) { console.log = Function.prototype.bind.call(console.log, console); } // console fix for IE9
+
 !function(global, undefined){
     /**
      * @description An Event Emitter object
