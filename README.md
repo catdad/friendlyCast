@@ -73,7 +73,7 @@ Stopping the video is also simple. However, note that stopping the video causes 
     //play a new video (or the same one again)
     chromecast.startCast(urlString);
     
-There are some auxilary methods in the media control object as well:
+There are some auxiliary methods in the media control object as well:
 
     chromecast.control.duration();
     //returns the total time in seconds
